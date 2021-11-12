@@ -18,12 +18,14 @@ function browsersync() {
 }
 
 function styles() {
-  return src('app/scss/style.scss')
+  return src('app/scss/style.scss', 'app/node_modules/@fancyapps/ui/dist/fancybox.css')
   
   .pipe(gulpStylelint({
+    failAfterError: false,
     reporters: [
       {
-        formatter: 'string', console: true
+        formatter: 'string', 
+        console: true,
       }
     ]
   }))
@@ -41,6 +43,8 @@ function styles() {
 function scripts() {
   return src([
     'node_modules/jquery/dist/jquery.js',
+    'node_modules/slick-carousel/slick/slick.js',
+    'node_modules/mixitup/dist/mixitup.js',
     'app/js/main.js'
   ])
   .pipe(concat('main.min.js'))
@@ -78,17 +82,6 @@ function cleanDist() {
   return del('dist')
 }
 
-function lintCss() {
-  return src('app/scss/*.scss')
-    .pipe(gulpStylelint({
-      reporters: [
-        {
-          formatter: 'string', console: true
-        }
-      ]
-    }));
-}
-
 function watching() {
   watch(['app/scss/**/*.scss'], styles);
   watch(['app/js/**/*.js', '!app/js/main.min.js'], scripts);
@@ -100,7 +93,6 @@ exports.scripts = scripts;
 exports.browsersync = browsersync;
 exports.images = images;
 exports.cleanDist = cleanDist;
-exports.lintCss = lintCss;
 exports.watching = watching;
 exports.build = series(cleanDist, images, build);
 
